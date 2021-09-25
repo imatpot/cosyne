@@ -4,3 +4,5 @@ WORKDIR /usr/src/cosyne
 COPY . .
 
 RUN cargo install --path .
+
+CMD ["cosyne"]

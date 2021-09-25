@@ -1,12 +1,13 @@
-version: "3"
+version: '3'
 
 services:
   cosyne:
-    image: "cosyne"
-    build: "."
-    hostname: "cosyne"
-    container_name: "cosyne"
-    restart: "unless-stopped"
-    command: "cosyne"
+    image: 'cosyne'
+    build: '.'
+    hostname: 'cosyne'
+    container_name: 'cosyne'
+    restart: 'unless-stopped'
     environment:
-      DISCORD_TOKEN: "${DISCORD_TOKEN:-token}"
+      APPLICATION_ID: '${APPLICATION_ID:?}'
+      DISCORD_TOKEN: '${DISCORD_TOKEN:?}'
+      LOG_LEVEL: '${LOG_LEVEL:-INFO}'
