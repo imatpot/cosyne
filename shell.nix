@@ -1,19 +1,19 @@
 let
-  mozOverlay = import (fetchTarball https://github.com/mozilla/nixpkgs-mozilla/archive/0510159186dd2ef46e5464484fbdf119393afa58.tar.gz);
-  nixpkgs = import (fetchTarball https://github.com/NixOS/nixpkgs/archive/1a56d76d718afb6c47dd96602c915b6d23f7c45d.tar.gz) {
-    overlays = [ mozOverlay ];
-  };
-
-  rustChannel = nixpkgs.rustChannelOf {
-    date = "2021-09-09"; # https://github.com/rust-lang/rust/blob/master/RELEASES.md
-    channel = "stable";
+  fenix-tarball = builtins.fetchTarball https://github.com/nix-community/fenix/archive/5860fbb9954d23a09dba45d7a0bba53eb558573d.tar.gz;
+  nixpkgs = import (builtins.fetchTarball https://github.com/NixOS/nixpkgs/archive/1a56d76d718afb6c47dd96602c915b6d23f7c45d.tar.gz) {
+    overlays = [ (import "${fenix-tarball}/overlay.nix") ];
   };
 
 in
-  with nixpkgs;
-  stdenv.mkDerivation {
-    name = "mozilla_overlay";
+  with nixpkgs; mkShell {
     buildInputs = [
-      rustChannel.rust
+      (
+        fenix.stable.withComponents [
+          "cargo"
+          "rustc"
+          "rustfmt"
+          "rust-src"
+        ]
+      )
     ];
   }
