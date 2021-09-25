@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  cosyne:
+    image: "cosyne"
+    build: "."
+    hostname: "cosyne"
+    container_name: "cosyne"
+    restart: "unless-stopped"
+    command: "cosyne"
+    environment:
+      DISCORD_TOKEN: "${DISCORD_TOKEN:-token}"
