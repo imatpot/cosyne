@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use chrono::Local;
 use colored::{ColoredString, Colorize};
 
@@ -8,30 +10,33 @@ pub enum LogLevel {
     DEBUG,
     INFO,
     WARNING,
-    ERROR,
     NOTIFICATION,
+    ERROR,
+    PANIC,
 }
 
 impl LogLevel {
     /// Returns the first letter of the `LogLevel` in an appropriate color.
     fn colored_abbr(&self) -> ColoredString {
         match self {
-            &LogLevel::DEBUG => "[D]".purple(),
-            &LogLevel::INFO => "[I]".blue(),
-            &LogLevel::WARNING => "[W]".yellow(),
-            &LogLevel::ERROR => "[E]".red(),
-            &LogLevel::NOTIFICATION => "[N]".green(),
+            LogLevel::DEBUG => "[D]".purple(),
+            LogLevel::INFO => "[I]".blue(),
+            LogLevel::WARNING => "[W]".yellow(),
+            LogLevel::NOTIFICATION => "[N]".green(),
+            LogLevel::ERROR => "[E]".red(),
+            LogLevel::PANIC => "[P]".red(),
         }
     }
 
     /// Converts the `LogLevel` into an `u8`.
     fn numeric(&self) -> u8 {
         match self {
-            &LogLevel::DEBUG => 0,
-            &LogLevel::INFO => 1,
-            &LogLevel::WARNING => 2,
-            &LogLevel::ERROR => 3,
-            &LogLevel::NOTIFICATION => 4,
+            LogLevel::DEBUG => 0,
+            LogLevel::INFO => 1,
+            LogLevel::WARNING => 2,
+            LogLevel::NOTIFICATION => 3,
+            LogLevel::ERROR => 4,
+            LogLevel::PANIC => 5,
         }
     }
 
@@ -45,18 +50,17 @@ impl LogLevel {
             "DEBUG" => Ok(LogLevel::DEBUG),
             "INFO" => Ok(LogLevel::INFO),
             "WARNING" => Ok(LogLevel::WARNING),
-            "ERROR" => Ok(LogLevel::ERROR),
             "NOTIFICATION" => Ok(LogLevel::NOTIFICATION),
+            "ERROR" => Ok(LogLevel::ERROR),
+            "PANIC" => Ok(LogLevel::PANIC),
 
             _ => Err(format!("LogLevel::{} doesn't exist", string)),
         }
     }
 }
 
-/// Provides formatted logging.
 pub struct Logger;
 
-#[allow(dead_code)]
 impl Logger {
     /// Log `content` with a timestamp and appropriate `log_level`.
     fn log(log_level: LogLevel, content: &str) {
@@ -65,7 +69,9 @@ impl Logger {
             let level = log_level.colored_abbr();
 
             if log_level.numeric() > 2 {
-                println!("\n{} {} {}\n", now, level, content);
+                println!("-------------------------");
+                println!("{} {} {}", now, level, content);
+                println!("-------------------------");
             } else {
                 println!("{} {} {}", now, level, content);
             }
@@ -100,5 +106,10 @@ impl Logger {
     /// Log `content` as a notification.
     pub fn notify(content: &str) {
         Logger::log(LogLevel::NOTIFICATION, content);
+    }
+
+    pub fn panic(content: &str) {
+        Logger::log(LogLevel::PANIC, content);
+        std::process::exit(1);
     }
 }

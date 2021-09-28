@@ -11,7 +11,7 @@ in
     environment // {
       buildInputs = [
         (
-          fenix.stable.withComponents [
+          fenix.latest.withComponents [
             "cargo"
             "rustc"
             "rustfmt"

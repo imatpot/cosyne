@@ -1,7 +1,7 @@
 use std::env;
 
+use poise::serenity_prelude::validate_token;
 use regex::Regex;
-use serenity::client::validate_token;
 
 use crate::util::logger::LogLevel;
 
