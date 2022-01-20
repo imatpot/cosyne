@@ -10,4 +10,4 @@ services:
     environment:
       APPLICATION_ID: '${APPLICATION_ID:?}'
       DISCORD_TOKEN: '${DISCORD_TOKEN:?}'
-      LOG_LEVEL: '${LOG_LEVEL:-INFO}'
+      LOG_LEVEL: '${LOG_LEVEL:-WARNING}'

@@ -1,9 +1,10 @@
 use std::env;
 
+use crate::util::logger::LogLevel;
+
+use dotenv::dotenv;
 use poise::serenity_prelude::validate_token;
 use regex::Regex;
-
-use crate::util::logger::LogLevel;
 
 /// Contains read & validated environment variables.
 pub struct Environment {
@@ -24,6 +25,7 @@ impl Environment {
     ///
     /// Errors if an environment variable is missing or in an invalid format.
     pub fn load() -> Environment {
+        dotenv().ok();
         Environment {
             discord_token: get_discord_token(),
             application_id: get_application_id(),
@@ -34,12 +36,12 @@ impl Environment {
 
 /// Returns an error message for a missing environment variable called `name`.
 fn missing_variable(name: &str) -> String {
-    format!("Missing environment variable {}", name)
+    format!("Missing environment variable {name}")
 }
 
 /// Returns an error message for an invalid environment variable called `name`.
 fn invalid_variable(name: &str) -> String {
-    format!("Invalid environment variable {}", name)
+    format!("Invalid environment variable {name}")
 }
 
 /// Fetches and validates the application ID environment variable.

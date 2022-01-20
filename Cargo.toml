@@ -9,23 +9,13 @@ edition = "2018"
 [dependencies]
 chrono = "0.4.19"
 colored = "2.0.0"
+dotenv = "0.15.0"
 regex = "1.5.4"
-
-[dependencies.poise]
-git = "https://github.com/kangalioo/poise"
-
-# [dependencies.serenity]
-# version = "0.10.9"
-# default-features = false
-# features = [
-#   "client",
-#   "cache",
-#   "gateway",
-#   "model",
-#   "unstable_discord_api",
-#   "rustls_backend",
-# ]
 
 [dependencies.tokio]
 version = "1.12.0"
 features = ["rt-multi-thread"]
+
+[dependencies.poise]
+git = "https://github.com/kangalioo/poise"
+rev = "dddd56d6e23e9510a8bd81254d0a6a3e5be080e7"

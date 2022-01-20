@@ -40,13 +40,18 @@ impl LogLevel {
         }
     }
 
+    /// Comapres `log_level` to the corresponding environment variable.
+    fn should_log(&self) -> bool {
+        self.numeric() >= Environment::load().log_level.numeric()
+    }
+
     /// Returns a `LogLevel` matching `string`.
     ///
     /// # Errors
     ///
     /// Errors when no `LogLevel` matches `string`.
-    pub fn from_string(string: &str) -> Result<Self, String> {
-        match string {
+    pub fn from_string(level: &str) -> Result<Self, String> {
+        match level {
             "DEBUG" => Ok(LogLevel::DEBUG),
             "INFO" => Ok(LogLevel::INFO),
             "WARNING" => Ok(LogLevel::WARNING),
@@ -54,33 +59,30 @@ impl LogLevel {
             "ERROR" => Ok(LogLevel::ERROR),
             "PANIC" => Ok(LogLevel::PANIC),
 
-            _ => Err(format!("LogLevel::{} doesn't exist", string)),
+            _ => Err(format!("LogLevel::{level} doesn't exist")),
         }
     }
 }
 
+/// Provides functions related to logging.
 pub struct Logger;
 
 impl Logger {
     /// Log `content` with a timestamp and appropriate `log_level`.
     fn log(log_level: LogLevel, content: &str) {
-        if Logger::should_log(&log_level) {
+        if log_level.should_log() {
+            // YYYY-MM-DD HH:MM:SS
             let now = Local::now().format("[%Y-%m-%d %H:%M:%S]");
             let level = log_level.colored_abbr();
 
             if log_level.numeric() > 2 {
                 println!("-------------------------");
-                println!("{} {} {}", now, level, content);
+                println!("{now} {level} {content}");
                 println!("-------------------------");
             } else {
-                println!("{} {} {}", now, level, content);
+                println!("{now} {level} {content}");
             }
         }
-    }
-
-    /// Comapres `log_level` to the corresponding environment variable.
-    fn should_log(log_level: &LogLevel) -> bool {
-        log_level.numeric() >= Environment::load().log_level.numeric()
     }
 
     /// Log `content` as a debug value.
@@ -108,6 +110,7 @@ impl Logger {
         Logger::log(LogLevel::NOTIFICATION, content);
     }
 
+    /// Log `content` as a panic announcement and exit the program.
     pub fn panic(content: &str) {
         Logger::log(LogLevel::PANIC, content);
         std::process::exit(1);
