@@ -35,6 +35,9 @@ pub async fn exec(
     )
     .await?;
 
+    Logger::info("Updating commands successful");
+    context.discord().online().await;
+
     Ok(())
 }
 

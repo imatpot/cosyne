@@ -8,6 +8,7 @@ edition = "2018"
 
 [dependencies]
 chrono = "0.4.19"
+chrono-tz = "0.6.1"
 colored = "2.0.0"
 dotenv = "0.15.0"
 regex = "1.5.4"

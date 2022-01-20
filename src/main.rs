@@ -8,12 +8,12 @@ use std::collections::HashSet;
 
 use crate::environment::Environment;
 use crate::events::Events;
+use crate::types::poise::Context;
 use crate::util::logger::Logger;
 
 use poise::{
-    serenity_prelude::UserId, Context, Framework, FrameworkOptions, Prefix, PrefixFrameworkOptions,
+    serenity_prelude::UserId, Framework, FrameworkOptions, Prefix, PrefixFrameworkOptions,
 };
-use types::poise::{Data, Error};
 
 #[tokio::main]
 async fn main() {
@@ -32,7 +32,7 @@ async fn main() {
     let framework_options = FrameworkOptions {
         owners,
 
-        pre_command: |context| Box::pin(log_command_invocation(context)),
+        pre_command: |context| Box::pin(log_invocation(context)),
 
         prefix_options: PrefixFrameworkOptions {
             additional_prefixes: prefixes,
@@ -48,10 +48,11 @@ async fn main() {
     let framework = Framework::build()
         .token(env.discord_token)
         .options(framework_options)
-        .user_data_setup(|_, __, ___| Box::pin(async { Ok(()) }))
         .client_settings(|client| client.raw_event_handler(Events))
+        .user_data_setup(|_context, _ready, _framework| Box::pin(async { Ok(()) }))
         .command(commands::update::exec(), |f| f)
-        .command(commands::ping::exec(), |f| f);
+        .command(commands::ping::exec(), |f| f)
+        .command(commands::timezone::exec(), |f| f);
 
     Logger::info("Starting bot");
     match framework.run().await {
@@ -60,7 +61,7 @@ async fn main() {
     }
 }
 
-async fn log_command_invocation(context: Context<'_, Data, Error>) {
+async fn log_invocation(context: Context<'_>) {
     let author = context.author().tag();
     let command = context.command().unwrap().name();
     let guild = context.guild().unwrap().name;

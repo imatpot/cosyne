@@ -1,5 +1,3 @@
-// Plagiarized from https://github.com/kangalioo/poise/blob/master/src/samples.rs
-
 use chrono::Local;
 use poise::{command, say_reply};
 

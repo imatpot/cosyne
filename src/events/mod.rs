@@ -8,7 +8,7 @@ pub struct Events;
 impl RawEventHandler for Events {
     async fn raw_event(&self, context: Context, event: Event) {
         match event {
-            Event::Ready(event) => ready::handle(context, event.ready),
+            Event::Ready(event) => ready::handle(context, event.ready).await,
             _ => (),
         }
     }
